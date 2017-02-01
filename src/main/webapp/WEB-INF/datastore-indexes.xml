@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="false">
+	<datastore-index kind="CarModel" ancestor="false" source="manual">
+        <property name="entity_type" direction="asc"/>
+        <property name="label" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="CarModel" ancestor="true" source="manual">
+        <property name="entity_type" direction="asc" />
+        <property name="label" direction="asc" />
+    </datastore-index>
+    <datastore-index kind="Fuel" ancestor="true" source="manual">
+    	<property name="timestamp" direction="desc" />
+    	<property name="odo" direction="desc" />
+    </datastore-index>
+    
+    <datastore-index kind="VehicleInfo" ancestor="true" source="manual">
+        <property name="order" direction="asc"/>
+    </datastore-index>
+        
+    <datastore-index kind="Fuel" ancestor="true" source="manual">
+    	<property name="timestamp" direction="asc" />
+    </datastore-index>
+    
+    <datastore-index kind="Fuel" ancestor="true" source="manual">
+        <property name="timestamp" direction="desc"/>
+    </datastore-index>
+    
+    <datastore-index kind="Maintenance" ancestor="true" source="manual">
+    	<property name="garage" direction="asc" />
+    </datastore-index>
+    
+    <datastore-index kind="Maintenance" ancestor="true" source="manual">
+        <property name="date" direction="asc"/>
+        <property name="odo" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>
