@@ -91,12 +91,12 @@ public class MaintenanceServlet extends HttpServlet {
 		String result;
 		
 		if(PartItem.isExists(partName)) {
-			result = "ÀÌ¹Ì µî·ÏµÇ¾ú½À´Ï´Ù : " + partName;
+			result = "ì´ë¯¸ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤ : " + partName;
 		}else {
 			PartItem item = new PartItem(partName);
 			DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 			ds.put(item.asNewEntity());
-			result = "µî·ÏµÇ¾ú½À´Ï´Ù";
+			result = "ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤";
 		}
 		
 		Map<String, String> map = new HashMap<String, String>();
@@ -121,7 +121,7 @@ public class MaintenanceServlet extends HttpServlet {
 			Key vehicleKey = null;
 			UserService us = UserServiceFactory.getUserService();
 			if(us.isUserLoggedIn()) {
-				//·Î±×ÀÎ »óÅÂ¸é vin Ã¼Å© (À¥ Á¢±Ù)
+				//ë¡œê·¸ì¸ ìƒíƒœë©´ vin ì²´í¬ (ì›¹ ì ‘ê·¼)
 				Key userKey = MyUser.getUserKey(us.getCurrentUser().getEmail());
 				Vehicle v = Vehicle.getByKey(KeyFactory.stringToKey(vKey));
 				if(!Vehicle.isOwner(userKey, v.mVin)) {
@@ -131,7 +131,7 @@ public class MaintenanceServlet extends HttpServlet {
 					vehicleKey = KeyFactory.stringToKey(v.mEncodedKey);
 				}
 			}else {
-				//headerVinÀ¸·Î µé¾î¿È
+				//headerVinìœ¼ë¡œ ë“¤ì–´ì˜´
 				Vehicle v = Vehicle.getByVin(headerVin);
 				if(v == null) {
 					result = "Cannot found VIN: " + headerVin;
@@ -147,7 +147,7 @@ public class MaintenanceServlet extends HttpServlet {
 				DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 				Key mtKey = ds.put(m.asNewEntity(vehicleKey));
 				
-				//parts ÀÔ·Â
+				//parts ì…ë ¥
 				String [] partArr = parts.split("\\^");
 				for(String part : partArr) {
 					if(!Util.isEmpty(part)) {

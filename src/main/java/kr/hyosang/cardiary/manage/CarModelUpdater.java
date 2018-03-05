@@ -48,7 +48,7 @@ public class CarModelUpdater extends HttpServlet {
 			String grade = m.group(5).trim();
 			
 			
-			//Á¦Á¶»ç ÀÔ·Â
+			//ì œì¡°ì‚¬ ì…ë ¥
 			Entity mnfEntity = queryEntity(CarModel.DEF_MANUFATURE, mnf, null);
 			
 			if(mnfEntity == null) {
@@ -58,10 +58,10 @@ public class CarModelUpdater extends HttpServlet {
 				mnfEntity = mdl.getEntity();
 				
 				mnfCnt++;
-				logger.log(Level.FINE, "Á¦Á¶»ç Ãß°¡ : " + mnf);
+				logger.log(Level.FINE, "ì œì¡°ì‚¬ ì¶”ê°€ : " + mnf);
 			}
 			
-			//¸ğµ¨ ÀÔ·Â
+			//ëª¨ë¸ ì…ë ¥
 			Entity mdlEntity = queryEntity(CarModel.DEF_MODEL, model, mnfEntity.getKey());
 			if(mdlEntity == null) {
 				CarModel mdl = CarModel.createModelEntity(model, mnfEntity.getKey());
@@ -69,10 +69,10 @@ public class CarModelUpdater extends HttpServlet {
 				ds.put(mdlEntity);
 				
 				modelCnt++;
-				logger.log(Level.FINE, "¸ğµ¨ Ãß°¡ : " + model);
+				logger.log(Level.FINE, "ëª¨ë¸ ì¶”ê°€ : " + model);
 			}
 			
-			//»ó¼¼¸ğµ¨ ÀÔ·Â
+			//ìƒì„¸ëª¨ë¸ ì…ë ¥
 			Entity subMdlEntity = queryEntity(CarModel.DEF_SUBMODEL, detailedModel, mdlEntity.getKey());
 			if(subMdlEntity == null) {
 				CarModel mdl = CarModel.createSubModelEntity(detailedModel, mdlEntity.getKey());
@@ -80,10 +80,10 @@ public class CarModelUpdater extends HttpServlet {
 				ds.put(subMdlEntity);
 				
 				dModelCnt++;
-				logger.log(Level.FINE, "»ó¼¼¸ğµ¨ Ãß°¡ : " + detailedModel);
+				logger.log(Level.FINE, "ìƒì„¸ëª¨ë¸ ì¶”ê°€ : " + detailedModel);
 			}
 			
-			//¿¬½Ä ÀÔ·Â
+			//ì—°ì‹ ì…ë ¥
 			Entity yearEntity = queryEntity(CarModel.DEF_YEAR, yeartype, subMdlEntity.getKey());
 			if(yearEntity == null) {
 				CarModel mdl = CarModel.createYearEntity(yeartype, subMdlEntity.getKey());
@@ -91,10 +91,10 @@ public class CarModelUpdater extends HttpServlet {
 				ds.put(yearEntity);
 				
 				yearCnt++;
-				logger.log(Level.FINE, "¿¬½Ä ÀÔ·Â : " + yeartype);
+				logger.log(Level.FINE, "ì—°ì‹ ì…ë ¥ : " + yeartype);
 			}
 			
-			//µî±Ş ÀÔ·Â
+			//ë“±ê¸‰ ì…ë ¥
 			Entity gradeEntity = queryEntity(CarModel.DEF_GRADE, grade, yearEntity.getKey());
 			if(gradeEntity == null) {
 				CarModel mdl = CarModel.createGradeEntity(grade, yearEntity.getKey());
@@ -102,11 +102,11 @@ public class CarModelUpdater extends HttpServlet {
 				ds.put(gradeEntity);
 				
 				gradeCnt++;
-				logger.log(Level.FINE, "µî±Ş ÀÔ·Â : " + grade);
+				logger.log(Level.FINE, "ë“±ê¸‰ ì…ë ¥ : " + grade);
 			}
 		}
 		
-		String result = String.format("Á¦Á¶»ç : %d°Ç\n¸ğµ¨ : %d°Ç\n¼¼ºÎ¸ğµ¨ : %d°Ç\n¿¬½Ä : %d°Ç\nµî±Ş : %d°Ç", mnfCnt, modelCnt, dModelCnt, yearCnt, gradeCnt);
+		String result = String.format("ì œì¡°ì‚¬ : %dê±´\nëª¨ë¸ : %dê±´\nì„¸ë¶€ëª¨ë¸ : %dê±´\nì—°ì‹ : %dê±´\në“±ê¸‰ : %dê±´", mnfCnt, modelCnt, dModelCnt, yearCnt, gradeCnt);
 		resp.setCharacterEncoding("UTF-8");
 		resp.getWriter().println(result);
 		

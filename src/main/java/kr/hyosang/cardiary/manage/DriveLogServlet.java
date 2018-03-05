@@ -45,18 +45,18 @@ public class DriveLogServlet extends HttpServlet {
 		String respJson = "";
 		
 		if("LogList".equals(action)) {
-			//·Î±× Ç×¸ñ ¸®½ºÆ®
+			//ë¡œê·¸ í•­ëª© ë¦¬ìŠ¤íŠ¸
 			String vehicleKey = (String) req.getParameter("vehicle_key");
 			String year = (String) req.getParameter("year");
 			String month = (String) req.getParameter("month");
 			
 			respJson = getLogList(vehicleKey, year, month);
 		}else if("LogDetail".equals(action)) {
-			//·Î±× »ó¼¼
+			//ë¡œê·¸ ìƒì„¸
 			String key = (String) req.getParameter("log_key");
 			respJson = getLogDetail(key);
 		}else if("UpdateInfo".equals(action)) {
-			//·Î±× ½ÃÀÛÁö¿ª/µµÂøÁö¿ª/°Å¸® Á¤º¸ ¾÷µ¥ÀÌÆ®
+			//ë¡œê·¸ ì‹œì‘ì§€ì—­/ë„ì°©ì§€ì—­/ê±°ë¦¬ ì •ë³´ ì—…ë°ì´íŠ¸
 			String key = (String) req.getParameter("key");
 			String dep = (String) req.getParameter("departure");
 			String dest = (String) req.getParameter("destination");
@@ -164,31 +164,31 @@ public class DriveLogServlet extends HttpServlet {
 			return false;
 		}
 		
-		//Â÷·® °Ë»ö
+		//ì°¨ëŸ‰ ê²€ìƒ‰
 		Vehicle v = Vehicle.getByVin(vin);
 		if(v == null) {
 			logger.severe("No VIN data : " + vin);
 			return false;
 		}
 		
-		//Â÷·®¿¡ ´ëÇØ ·Î±× °Ë»ö
+		//ì°¨ëŸ‰ì— ëŒ€í•´ ë¡œê·¸ ê²€ìƒ‰
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		Key vehicleKey = KeyFactory.stringToKey(v.mEncodedKey);
 		DriveLog logParent = DriveLog.query(vehicleKey, timeKey);
 		if(logParent == null) {
-			//»õ·Î µî·Ï
+			//ìƒˆë¡œ ë“±ë¡
 			logParent = new DriveLog(timeKey);
 			Entity e = logParent.asNewEntity(vehicleKey);
 			ds.put(e);
 			logParent = new DriveLog(e);
 		}else {
-			//ÀÌ¾î¼­ µî·Ï
+			//ì´ì–´ì„œ ë“±ë¡
 			logParent.mDestination = "";
 			logParent.mDistance = 0;
 			ds.put(logParent.asUpdateEntity());
 		}
 		
-		//·Î±× µ¥ÀÌÅÍ ÀúÀå
+		//ë¡œê·¸ ë°ì´í„° ì €ì¥
 		DriveLogItemSet logSet = new DriveLogItemSet();
 		Query q = new Query(DriveLogData.KIND, logParent.getKey());
 		PreparedQuery pq = ds.prepare(q);
@@ -205,7 +205,7 @@ public class DriveLogServlet extends HttpServlet {
 		
 		ds.put(log.asNewEntity(logParent.getKey()));
 		
-		//¿ª Áö¿ÀÄÚµù
+		//ì—­ ì§€ì˜¤ì½”ë”©
 		logParent.updateDepDest();
 		
 		return true;
@@ -214,9 +214,9 @@ public class DriveLogServlet extends HttpServlet {
 	private String mergeWithPrevious(Key logKey) {
 		DriveLog logParent = DriveLog.getByKey(logKey);
 		
-		//º´ÇÕ ´ë»ó ·Î±×Ç×¸ñ °Ë»ö
+		//ë³‘í•© ëŒ€ìƒ ë¡œê·¸í•­ëª© ê²€ìƒ‰
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		long start = logParent.mTimestamp - (24 * 60 * 60 * 1000);	//Àü 24½Ã°£µ¿¾ÈÀÇ µ¥ÀÌÅÍ Áß
+		long start = logParent.mTimestamp - (24 * 60 * 60 * 1000);	//ì „ 24ì‹œê°„ë™ì•ˆì˜ ë°ì´í„° ì¤‘
 		Query q = new Query(DriveLog.KIND);
 		q.setFilter(CompositeFilterOperator.and(
 				new FilterPredicate(DriveLog.KEY_TIMESTAMP, FilterOperator.GREATER_THAN_OR_EQUAL, start),
@@ -232,44 +232,44 @@ public class DriveLogServlet extends HttpServlet {
 		if(iter.hasNext()) {
 			Entity targetParentEntity = iter.next();
 			
-			//»èÁ¦ÇÒ Å°µé
+			//ì‚­ì œí•  í‚¤ë“¤
 			List<Key> deleteKeys = new ArrayList<Key>();
 			
-			//¿Å±æ µ¥ÀÌÅÍ ÃßÃâ
+			//ì˜®ê¸¸ ë°ì´í„° ì¶”ì¶œ
 			List<DriveLogItem> list = DriveLogData.queryList(logKey, deleteKeys);
 			
-			//Å¸°Ù µ¥ÀÌÅÍ
+			//íƒ€ê²Ÿ ë°ì´í„°
 			List<Key> targetKeys = new ArrayList<Key>();
 			List<DriveLogItem> targetList = DriveLogData.queryList(targetParentEntity.getKey(), targetKeys);
 			
-			//º´ÇÕ
+			//ë³‘í•©
 			DriveLogItemSet logSet = new DriveLogItemSet();
 			logSet.addLogData(targetList);
 			logSet.addLogData(list);
 			
-			//ÀúÀå
+			//ì €ì¥
 			if(targetKeys.size() == 1) {
-				//ÇÏ³ª¸é ¾÷µ¥ÀÌÆ®·Î ÀúÀå
+				//í•˜ë‚˜ë©´ ì—…ë°ì´íŠ¸ë¡œ ì €ì¥
 				DriveLogData data = new DriveLogData();
 				data.mLogdata = logSet.asString();
 				Entity ee = data.asUpdateEntity(targetKeys.get(0));
 				ds.put(ee);
 			}else {
-				//±× ¿Ü¿¡´Â »õ·Î¿î ¿£Æ¼Æ¼·Î ÀúÀå
+				//ê·¸ ì™¸ì—ëŠ” ìƒˆë¡œìš´ ì—”í‹°í‹°ë¡œ ì €ì¥
 				DriveLogData data = new DriveLogData();
 				data.mLogdata = logSet.asString();
 				Entity ee = data.asNewEntity(targetParentEntity.getKey());
 				ds.put(ee);
 				
-				//±âÁ¸ µ¥ÀÌÅÍ´Â »èÁ¦Ã³¸®
+				//ê¸°ì¡´ ë°ì´í„°ëŠ” ì‚­ì œì²˜ë¦¬
 				deleteKeys.addAll(targetKeys);
 			}
 			
-			//»èÁ¦
+			//ì‚­ì œ
 			deleteKeys.add(logKey);
 			ds.delete(deleteKeys);
 			
-			//±âÁ¸ Áö¿ÀÄÚµù µ¥ÀÌÅÍ »èÁ¦
+			//ê¸°ì¡´ ì§€ì˜¤ì½”ë”© ë°ì´í„° ì‚­ì œ
 			DriveLog targetLog = new DriveLog(targetParentEntity);
 			targetLog.mDestination = targetLog.mDeparture = "";
 			targetLog.mDistance = 0;
