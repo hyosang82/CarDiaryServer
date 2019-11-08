@@ -45,6 +45,10 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 		<servlet-name>RelayServlet</servlet-name>
 		<servlet-class>kr.hyosang.cardiary.util.RelayServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>RestServlet</servlet-name>
+		<servlet-class>kr.hyosang.cardiary.data.rest.RestServlet</servlet-class>
+	</servlet>
 
 
 	<servlet>
@@ -95,6 +99,10 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 	<servlet-mapping>
 		<servlet-name>RelayServlet</servlet-name>
 		<url-pattern>/Relay/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RestServlet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 	
 	
