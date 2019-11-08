@@ -1,0 +1,56 @@
+indexes:
+  - kind: CarModel
+    ancestor: false
+    properties:
+      - direction: asc
+        name: entity_type
+      - direction: asc
+        name: label
+
+  - kind: CarModel
+    ancestor: true
+    properties:
+      - direction: asc
+        name: entity_type
+      - direction: asc
+        name: label
+
+  - kind: Fuel
+    ancestor: true
+    properties:
+      - direction: desc
+        name: timestamp
+      - direction: desc
+        name: odo
+
+  - kind: VehicleInfo
+    ancestor: true
+    properties:
+      - direction: asc
+        name: order
+
+  - kind: Fuel
+    ancestor: true
+    properties:
+      - direction: asc
+        name: timestamp
+
+  - kind: Fuel
+    ancestor: true
+    properties:
+      - direction: desc
+        name: timestamp
+
+  - kind: Maintenance
+    ancestor: true
+    properties:
+      - direction: asc
+        name: garage
+
+  - kind: Maintenance
+    ancestor: true
+    properties:
+      - direction: asc
+        name: date
+      - direction: asc
+        name: odo
