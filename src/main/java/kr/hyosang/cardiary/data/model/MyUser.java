@@ -15,6 +15,7 @@ public class MyUser {
 	public static final String KIND = "MyUser";
 	
 	public static final String KEY_USER_ID = "user_id";
+	public static final String KEY_TOKEN = "token";
 	
 	private static Entity getUserEntity(String id) {
 		Query q = new Query(KIND);
@@ -29,7 +30,22 @@ public class MyUser {
 			return null;
 		}
 	}
-	
+
+	public static Entity getUserKeyByToken(String token) {
+		Query q = new Query(KIND);
+		q.setFilter(new FilterPredicate(KEY_TOKEN, FilterOperator.EQUAL, token));
+
+		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery pq = ds.prepare(q);
+
+		if(pq.countEntities(FetchOptions.Builder.withDefaults()) == 1) {
+			return pq.asSingleEntity();
+		}else {
+			return null;
+		}
+	}
+
+
 	public static MyUser getUser(String id) {
 		Entity e = getUserEntity(id);
 		if(e != null) {

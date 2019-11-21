@@ -2,13 +2,10 @@ package kr.hyosang.cardiary.data.model;
 
 import java.util.List;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
@@ -27,11 +24,25 @@ public class DriveLog {
 	public static final String KEY_DESTINATION = "destination";
 	public static final String KEY_DISTANCE = "distance";
 	
-	@SerializedName("key")         private Key mMyKey = null;
-	@SerializedName("timestamp")   public long mTimestamp;
-	@SerializedName("departure")   public String mDeparture = "";
-	@SerializedName("destination") public String mDestination = "";
-	@SerializedName("distance")    public double mDistance = 0.0f;
+	@SerializedName("key")
+    @JsonIgnore
+	private Key mMyKey = null;
+
+	@SerializedName("timestamp")
+	@JsonProperty("timestamp")
+	public long mTimestamp;
+
+	@SerializedName("departure")
+	@JsonProperty("departure")
+	public String mDeparture = "";
+
+	@SerializedName("destination")
+	@JsonProperty("destination")
+	public String mDestination = "";
+
+	@SerializedName("distance")
+	@JsonProperty("distance")
+	public double mDistance = 0.0f;
 	
 	
 	public static DriveLog query(Key parent, long timestamp) {
@@ -71,6 +82,11 @@ public class DriveLog {
 	
 	public Key getKey() {
 		return mMyKey;
+	}
+
+	@JsonProperty("key")
+	public String getKeyString() {
+		return KeyFactory.keyToString(mMyKey);
 	}
 	
 	public Entity asNewEntity(Key parent) {

@@ -2,6 +2,8 @@ package kr.hyosang.cardiary.data.model;
 
 import java.util.logging.Logger;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -24,12 +26,29 @@ public class Vehicle {
 	public static final String KEY_PLATE = "plate";
 	public static final String KEY_ORDER = "order";
 	
-	@SerializedName("encoded_key") public String mEncodedKey;
-	@SerializedName("model_name")  public String mModelName;
-	@SerializedName("year_type")   public String mYeartype;
-	@SerializedName("vin")         public String mVin;
-	@SerializedName("plate")       public String mPlate;
-	@SerializedName("order")       public int mOrder = 0;
+	@SerializedName("encoded_key")
+	@JsonProperty("encoded_key")
+	public String mEncodedKey;
+
+	@SerializedName("model_name")
+	@JsonProperty("model_name")
+	public String mModelName;
+
+	@SerializedName("year_type")
+	@JsonProperty("year_type")
+	public String mYeartype;
+
+	@SerializedName("vin")
+	@JsonProperty("vin")
+	public String mVin;
+
+	@SerializedName("plate")
+	@JsonProperty("plate")
+	public String mPlate;
+
+	@SerializedName("order")
+	@JsonProperty("order")
+	public int mOrder = 0;
 	
 	public static Vehicle getByKey(Key key) {
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -89,7 +108,7 @@ public class Vehicle {
 		}catch(NullPointerException ee) {
 		}
 	}
-	
+
 	private Entity setEntity(Entity e) {
 		e.setProperty(KEY_MODEL_NAME, mModelName);
 		e.setProperty(KEY_YEAR_TYPE, mYeartype);
@@ -99,12 +118,14 @@ public class Vehicle {
 		
 		return e;		
 	}
-	
+
+	@JsonIgnore
 	public Entity getAsEntity(Key parent) {
 		Entity e = new Entity(KIND, parent);
 		return setEntity(e);
 	}
-	
+
+	@JsonIgnore
 	public Entity getAsUpdateEntity() {
 		Entity e = new Entity(KeyFactory.stringToKey(mEncodedKey));
 		return setEntity(e);

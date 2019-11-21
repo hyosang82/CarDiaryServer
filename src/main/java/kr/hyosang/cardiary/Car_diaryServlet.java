@@ -28,48 +28,48 @@ import kr.hyosang.cardiary.util.Util;
 
 @SuppressWarnings("serial")
 public class Car_diaryServlet extends HttpServlet {
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		resp.setCharacterEncoding("UTF-8");
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setCharacterEncoding("UTF-8");
 
-		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		PrintWriter w = resp.getWriter();
-		Query q;
-		PreparedQuery pq;
-		Logger logger = Logger.getLogger("Batch");
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        PrintWriter w = resp.getWriter();
+        Query q;
+        PreparedQuery pq;
+        Logger logger = Logger.getLogger("Batch");
 
-		String key = (String) req.getParameter("key");
+        String key = (String) req.getParameter("key");
 
-		if(!Util.isEmpty(key)) {
-			Key keyObj = KeyFactory.stringToKey(key);
-			q = new Query("DriveLogItem", keyObj);
-			q.addSort("timestamp", SortDirection.ASCENDING);
-			pq = ds.prepare(q);
+        if(!Util.isEmpty(key)) {
+            Key keyObj = KeyFactory.stringToKey(key);
+            q = new Query("DriveLogItem", keyObj);
+            q.addSort("timestamp", SortDirection.ASCENDING);
+            pq = ds.prepare(q);
 
-			double alt, lat, lng, spd;
-			long ts;
-			StringBuffer sb = new StringBuffer();
-			List<Key> deleteKeys = new ArrayList<Key>();
+            double alt, lat, lng, spd;
+            long ts;
+            StringBuffer sb = new StringBuffer();
+            List<Key> deleteKeys = new ArrayList<Key>();
 
-			for(Entity e : pq.asIterable()) {
-				ts = (long) e.getProperty("timestamp");
-				alt = (double) e.getProperty("altitude");
-				lat = (double) e.getProperty("latitude");
-				lng = (double) e.getProperty("longitude");
-				spd = (double) e.getProperty("speed");
+            for(Entity e : pq.asIterable()) {
+                ts = (long) e.getProperty("timestamp");
+                alt = (double) e.getProperty("altitude");
+                lat = (double) e.getProperty("latitude");
+                lng = (double) e.getProperty("longitude");
+                spd = (double) e.getProperty("speed");
 
-				String item = String.format("%f|%f|%f|%f|%d$", lat, lng, alt, spd, ts);
-				sb.append(item);
+                String item = String.format("%f|%f|%f|%f|%d$", lat, lng, alt, spd, ts);
+                sb.append(item);
 
-				deleteKeys.add(e.getKey());
-			}
+                deleteKeys.add(e.getKey());
+            }
 
-			DriveLogData data = new DriveLogData();
-			data.mLogdata = sb.toString();
+            DriveLogData data = new DriveLogData();
+            data.mLogdata = sb.toString();
 
-			ds.put(data.asNewEntity(keyObj));
+            ds.put(data.asNewEntity(keyObj));
 
-			ds.delete(deleteKeys);
-		}
+            ds.delete(deleteKeys);
+        }
 
 		/* 데이터 뽑아오기
 		{
@@ -190,25 +190,25 @@ public class Car_diaryServlet extends HttpServlet {
 			}
 		}
 		*/
-	}
+    }
 
-	private List<String> getGpsData(Key key, List<Key> keySet) {
-		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		Query q = new Query("TrackLogData", key);
-		q.addSort("timestamp", SortDirection.ASCENDING);
+    private List<String> getGpsData(Key key, List<Key> keySet) {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        Query q = new Query("TrackLogData", key);
+        q.addSort("timestamp", SortDirection.ASCENDING);
 
-		List<String> rtn = new ArrayList<String>();
+        List<String> rtn = new ArrayList<String>();
 
-		PreparedQuery pq = ds.prepare(q);
+        PreparedQuery pq = ds.prepare(q);
 
-		for(Entity e : pq.asIterable()) {
-			String logdata = ((Text)e.getProperty("logdata")).getValue();
+        for(Entity e : pq.asIterable()) {
+            String logdata = ((Text)e.getProperty("logdata")).getValue();
 
-			rtn.add(logdata);
+            rtn.add(logdata);
 
-			keySet.add(e.getKey());
-		}
+            keySet.add(e.getKey());
+        }
 
-		return rtn;
-	}
+        return rtn;
+    }
 }

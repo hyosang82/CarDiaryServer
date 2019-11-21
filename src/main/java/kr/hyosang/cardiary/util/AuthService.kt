@@ -1,8 +1,10 @@
 package kr.hyosang.cardiary.util
 
+import com.google.appengine.api.datastore.Entity
 import com.google.appengine.api.datastore.Key
 import com.google.appengine.api.users.UserServiceFactory
 import kr.hyosang.cardiary.data.model.MyUser
+import java.util.*
 
 class AuthService {
     companion object {
@@ -19,6 +21,11 @@ class AuthService {
             }
 
             throw RuntimeException("Not logged in.")
+        }
+
+        @JvmStatic
+        fun userFromToken(token: String): Entity {
+            return Optional.of(MyUser.getUserKeyByToken(token)).orElseThrow { RuntimeException("No user found!!!") }
         }
     }
 }
