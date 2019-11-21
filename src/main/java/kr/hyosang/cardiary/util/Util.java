@@ -115,6 +115,8 @@ public class Util {
 			}
 			
 			conn.connect();
+
+			Logger.getLogger("Util").info("Relay connect=" + conn.getResponseCode());
 			
 			InputStreamReader reader = new InputStreamReader(conn.getInputStream(), "UTF-8");
 			char [] buf = new char[1024];
@@ -128,6 +130,7 @@ public class Util {
 			
 			return sb.toString();		
 		}catch(IOException e) {
+			e.printStackTrace();
 		}finally {
 			if(conn != null) { conn.disconnect(); }
 		}

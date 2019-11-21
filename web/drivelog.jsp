@@ -11,7 +11,7 @@
 %>
 
 <script type="text/javascript" src="/js/common.js"></script>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=547e1e38ef1cdc61fcd64202fb338889&libraries=drawing"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=547e1e38ef1cdc61fcd64202fb338889&libraries=drawing,services"></script>
 
 <script type="text/javascript">
 var CHK_MASK_DEP = 0x0001;
@@ -290,19 +290,20 @@ function checkCallback(json) {
 }
 
 function checkGeocode(t, lat, lng) {
-	var apiurl = "/Relay/ReverseGeocode"
-	
-	$.ajax({
-		url: apiurl,
-		method: "POST",
-		data: {
-			type: t,
-			lat: lat,
-			lng: lng
-		},
-		dataType: "json",
-		success: checkCallback
-	});
+	var geocoder = new kakao.maps.services.Geocoder();
+	var callback = function(result, status) {
+		if(status == kakao.maps.services.Status.OK) {
+			if(t == "0") {
+				updateParam["departure"] = result[0].address_name;
+			}else if(t == "1") {
+				updateParam["destination"] = result[0].address_name;
+			}
+
+			check();
+		}
+	};
+
+	geocoder.coord2RegionCode(lng, lat, callback);
 }
 
 function initMap() {
