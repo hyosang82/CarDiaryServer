@@ -5,9 +5,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -90,8 +94,12 @@ public class Util {
 		
 		return val;
 	}
-	
+
 	public static String getWebContent(String url) {
+		return getWebContent(url, null);
+	}
+	
+	public static String getWebContent(String url, Map<String, String> headers) {
 		HttpURLConnection conn = null;
 		try {
 			URL u = new URL(url);
@@ -99,6 +107,12 @@ public class Util {
 			
 			conn.setDoOutput(false);
 			conn.setDoInput(true);
+
+			if(headers != null) {
+				for(Map.Entry<String, String> entry: headers.entrySet()) {
+					conn.addRequestProperty(entry.getKey(), entry.getValue());
+				}
+			}
 			
 			conn.connect();
 			
@@ -122,16 +136,24 @@ public class Util {
 	}
 	
 	public static String reverseGeocode(double lat, double lng) {
-		String urlFmt = "https://apis.daum.net/local/geo/coord2addr?apikey=" + Define.APIKEY_DAUM + "&format=fullname&inputCoordSystem=WGS84&output=json&latitude=%.6f&longitude=%.6f";
-		String url = String.format(urlFmt, lat, lng);
-		String result = Util.getWebContent(url);
-		
-		Logger.getLogger("Util").info("Result : " + result);
-		
-		Gson gson = new Gson();
-		Coord2Addr data = gson.fromJson(result, Coord2Addr.class);
-		
-		return data.fullName;
+		try {
+			String urlFmt = "https://dapi.kakao.com/v2/local/geo/coord2address.json?y=%.6f&x=%.6f";
+			String url = String.format(urlFmt, lat, lng);
+			String auth = "KakaoAK 625bac10d4327ca2111e903956b62e1e";
+			Map<String, String> headers = new HashMap<>();
+			headers.put("Authorization", auth);
+			String result = Util.getWebContent(url, headers);
+
+			Logger.getLogger("Util").info("URL: " + url + ",Result : " + result);
+
+
+			Coord2Addr data = new ObjectMapper().readValue(result, Coord2Addr.class);
+
+			return data.fullName;
+		}catch(JsonProcessingException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 		
 }

@@ -11,7 +11,7 @@
 %>
 
 <script type="text/javascript" src="/js/common.js"></script>
-<script type="text/javascript" src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=<%=Define.NAVER_CLIENT_ID%>"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=547e1e38ef1cdc61fcd64202fb338889&libraries=drawing"></script>
 
 <script type="text/javascript">
 var CHK_MASK_DEP = 0x0001;
@@ -139,9 +139,10 @@ function showDetail(key) {
 		}else {
 			h = w;
 		}
-		
-		mapObj.setSize(new nhn.api.map.Size(w, h));
+
 		$("#pointListArea").height(h);
+		$("#map").height(h);
+		mapObj.relayout();
 	}, 500);
 	
 	$.ajax({
@@ -156,7 +157,7 @@ function showDetail(key) {
 			
 			tbody.empty();
 			if(pathObj) {
-				mapObj.removeOverlay(pathObj);
+				pathObj.setMap(null);
 			}
 			selMarker.setVisible(false);
 			
@@ -196,34 +197,41 @@ function showDetail(key) {
 }
 
 function drawLines(list) {
-	var icon = new nhn.api.map.Icon("/image/pin_spot2.png",
-			new nhn.api.map.Size(28, 37),
-			new nhn.api.map.Size(14, 37));
+	var icon = new kakao.maps.MarkerImage("/image/pin_spot2.png", new kakao.maps.Size(28, 37), { offset: new kakao.maps.Point(14, 37) });
 	var listLatLng = [];
 	
 	var idx = 0;
-	
+	var bounds = new kakao.maps.LatLngBounds();
+
 	for(var k in list) {
-		var point = new nhn.api.map.LatLng(list[k].latitude, list[k].longitude);
+		var point = new kakao.maps.LatLng(list[k].latitude, list[k].longitude);
+		if(idx == 0) {
+			bounds = new kakao.maps.LatLngBounds(point, point);
+		}else {
+			bounds.extend(point);
+		}
+
 		idx++;
 		
 		listLatLng.push(point);
 	}
 	
-	mapObj.setBound(listLatLng);
+	mapObj.setBounds(bounds);
 	
-	pathObj = new nhn.api.map.Polyline(listLatLng);
-	pathObj.setStyle({
+	pathObj = new kakao.maps.Polyline({
+		map: mapObj,
+		path: listLatLng
+	});
+	pathObj.setOptions({
 		strokeColor: "#FF0000",
-		strokeWidth: 5,
+		strokeWeight: 5,
 		strokeOpacity: 1,
 		strokeStyle: "solid"
 	});
-	mapObj.addOverlay(pathObj);
 }
 
 function moveToPoint(idx) {
-	var pt = new nhn.api.map.LatLng(pointList[idx].latitude, pointList[idx].longitude);
+	var pt = new kakao.maps.LatLng(pointList[idx].latitude, pointList[idx].longitude);
 	mapObj.setCenter(pt);
 	
 	selMarker.setPoint(pt);
@@ -299,18 +307,18 @@ function checkGeocode(t, lat, lng) {
 
 function initMap() {
 	var w = $("#map").width();
-	
-	mapObj = new nhn.api.map.Map(document.getElementById("map"), {
-		
+
+	mapObj = new kakao.maps.Map(document.getElementById("map"), {
+		center: new kakao.maps.LatLng(33.45, 126.57),
+		level: 3
 	});
-	
-	var icon = new nhn.api.map.Icon("/image/pin_spot2.png",
-			new nhn.api.map.Size(28, 37),
-			new nhn.api.map.Size(14, 37));
-	
-	selMarker = new nhn.api.map.Marker(icon, {});
-	selMarker.setVisible(false);
-	mapObj.addOverlay(selMarker);
+
+	var icon = new kakao.maps.MarkerImage("/image/pin_spot2.png", new kakao.maps.Size(28, 37), { offset: new kakao.maps.Point(14, 37) });
+
+	selMarker = new kakao.maps.Marker({ image: icon });
+	//selMarker.setVisible(false);
+
+	selMarker.setMap(mapObj);
 }
 
 function mergePrevious() {
@@ -389,7 +397,7 @@ function mergePrevious() {
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-md-8">
-						<div id="map" style="width:100%;"></div>
+						<div id="map" style="width:100%;height:100%;"></div>
 					</div>
 					<div class="col-md-4" style="overflow-y:scroll;" id="pointListArea">
 						<div class="table-responsive">
