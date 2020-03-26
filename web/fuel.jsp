@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="kr.hyosang.cardiary.util.Util" %>
-<%@ page import="kr.hyosang.cardiary.Define" %>
+<%@ page import="kr.hyosang.cardiary.Const" %>
 <%@ include file="/include/head.jsp" %>
 
 <%=getPageTitle("Fuel", "Fuel records")%>
@@ -11,7 +11,7 @@
 %>
 
 <script type="text/javascript" src="/js/common.js"></script>
-<script type="text/javascript" src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=<%=Define.NAVER_CLIENT_ID%>"></script>
+<script type="text/javascript" src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=<%=Const.NAVER_CLIENT_ID%>"></script>
 
 <script type="text/javascript">
 var mapObj;

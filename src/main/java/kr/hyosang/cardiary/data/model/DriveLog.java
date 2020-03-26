@@ -8,10 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import kr.hyosang.cardiary.Define;
+import kr.hyosang.cardiary.Const;
 import kr.hyosang.cardiary.data.model.json.DriveLogItem;
 import kr.hyosang.cardiary.data.model.json.daum.Coord2Addr;
 import kr.hyosang.cardiary.util.Util;
@@ -70,10 +71,10 @@ public class DriveLog {
 	
 	public DriveLog(Entity e) {
 		mMyKey = e.getKey();
-		mTimestamp = (long) e.getProperty(KEY_TIMESTAMP);
+		mTimestamp = (long)(Long) e.getProperty(KEY_TIMESTAMP);
 		mDeparture = (String) e.getProperty(KEY_DEPARTURE);
 		mDestination = (String) e.getProperty(KEY_DESTINATION);
-		mDistance = (double) e.getProperty(KEY_DISTANCE);
+		mDistance = (double)(Double) e.getProperty(KEY_DISTANCE);
 	}
 	
 	public DriveLog(long timestamp) {
@@ -117,7 +118,7 @@ public class DriveLog {
 				DriveLogItem first = list.get(0);
 				DriveLogItem last = list.get(list.size() - 1);
 				
-				String urlFmt = "https://apis.daum.net/local/geo/coord2addr?apikey=" + Define.APIKEY_DAUM + "&format=fullname&inputCoordSystem=WGS84&output=json&latitude=%.6f&longitude=%.6f";
+				String urlFmt = "https://apis.daum.net/local/geo/coord2addr?apikey=" + Const.APIKEY_DAUM + "&format=fullname&inputCoordSystem=WGS84&output=json&latitude=%.6f&longitude=%.6f";
 				Gson gson = new Gson();
 				DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 				

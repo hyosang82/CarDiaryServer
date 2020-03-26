@@ -1,5 +1,4 @@
-target
-.idea
-*.iml
-.gradle
+target/
+.idea/
 out/
+*.iml

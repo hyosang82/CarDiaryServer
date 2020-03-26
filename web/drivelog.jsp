@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="kr.hyosang.cardiary.util.Util" %>
-<%@ page import="kr.hyosang.cardiary.Define" %>
 <%@ include file="/include/head.jsp" %>
 
 <%=getPageTitle("Drive Log", "Driving log")%>

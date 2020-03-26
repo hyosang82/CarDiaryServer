@@ -17,12 +17,12 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 
-import kr.hyosang.cardiary.Define;
 import kr.hyosang.cardiary.data.model.MyUser;
 import kr.hyosang.cardiary.data.model.json.daum.Coord2Addr;
 
 public class Util {
 	public static boolean isUser() {
+
 		UserService us = UserServiceFactory.getUserService();
 		if(us.isUserLoggedIn()) {
 			User u = us.getCurrentUser();

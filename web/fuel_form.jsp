@@ -8,7 +8,6 @@
 <%@ page import="com.google.appengine.api.datastore.Entity" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="kr.hyosang.cardiary.util.Util" %>
-<%@ page import="kr.hyosang.cardiary.Define" %>
 <%@ page import="kr.hyosang.cardiary.data.model.MyUser" %>
 <%@ page import="kr.hyosang.cardiary.data.model.Vehicle" %>
 
