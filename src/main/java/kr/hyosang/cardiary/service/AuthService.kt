@@ -6,6 +6,9 @@ import com.google.appengine.api.users.UserServiceFactory
 import kr.hyosang.cardiary.data.model.CDToken
 import kr.hyosang.cardiary.data.model.CDUser
 import kr.hyosang.cardiary.data.model.MyUser
+import kr.hyosang.cardiary.exception.InvalidAuthorizationException
+import kr.hyosang.cardiary.exception.NotJoinedException
+import kr.hyosang.cardiary.exception.NotLoggedInException
 import java.util.*
 import java.util.regex.Pattern
 import javax.servlet.RequestDispatcher
@@ -16,9 +19,9 @@ class AuthService {
         fun getCurrentUser(): CDUser {
             val us = UserServiceFactory.getUserService()
             if(us.isUserLoggedIn) {
-                return CDUser.getUserByEmail(us.currentUser.email) ?: throw RuntimeException("Not joined")
+                return CDUser.getUserByEmail(us.currentUser.email) ?: throw NotJoinedException()
             }else {
-                throw RuntimeException("Not logged in")
+                throw NotLoggedInException()
             }
         }
 
@@ -33,7 +36,7 @@ class AuthService {
             }?.userKey
 
             return if(userKey != null && userKey.isNotEmpty()) {
-                return CDUser.getUserByKey(KeyFactory.stringToKey(userKey)) ?: throw RuntimeException("Invalid Authorization")
+                return CDUser.getUserByKey(KeyFactory.stringToKey(userKey)) ?: throw InvalidAuthorizationException()
             }else {
                 getCurrentUser()
             }
