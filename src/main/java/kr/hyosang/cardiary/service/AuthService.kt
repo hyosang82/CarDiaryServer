@@ -42,8 +42,12 @@ class AuthService {
             }
         }
 
-        fun checkOwnership(userKey: Key, vehicleKey: Key): Boolean {
+        fun checkVehicleOwnership(userKey: Key, vehicleKey: Key): Boolean {
             return (vehicleKey.parent == userKey)
+        }
+
+        fun checkRouteOwnership(userKey: Key, routeKey: Key): Boolean {
+            return (routeKey.parent.parent == userKey)
         }
     }
 }

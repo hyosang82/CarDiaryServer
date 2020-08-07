@@ -4,8 +4,8 @@ import kr.hyosang.cardiary.data.model.DriveLog
 import kr.hyosang.cardiary.service.RouteLogPoint
 
 data class RouteLogListResponse(
-    val year: String,
-    val month: String
+    val year: Int,
+    val month: Int
 ) {
     val routeList = ArrayList<DriveLog>()
 

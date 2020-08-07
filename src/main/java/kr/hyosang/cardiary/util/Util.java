@@ -72,14 +72,19 @@ public class Util {
 		
 		return true;
 	}
-	
+
+
 	public static long[] getDateRange(String year, String month) {
 		int y = parseInt(year, 2015);
 		int m = parseInt(month, 1);
-		
+
+		return getDateRange(y, m);
+	}
+
+	public static long[] getDateRange(int year, int month) {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("KST"));
-		c.set(Calendar.YEAR, y);
-		c.set(Calendar.MONTH, m - 1);
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, month - 1);
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.set(Calendar.HOUR_OF_DAY, 0);
 		c.set(Calendar.MINUTE, 0);

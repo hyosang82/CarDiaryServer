@@ -29,7 +29,7 @@ class RouteLogList: RestBaseServlet() {
                     val year = group(2)
                     val month = group(3)
 
-                    if (AuthService.checkOwnership(user.key!!, KeyFactory.stringToKey(vKey))) {
+                    if (AuthService.checkVehicleOwnership(user.key!!, KeyFactory.stringToKey(vKey))) {
                         val range = Util.getDateRange(year, month)
                         val pq = DatastoreServiceFactory.getDatastoreService().prepare(
                             Query(DriveLog.KIND, KeyFactory.stringToKey(vKey)).apply {
@@ -51,7 +51,7 @@ class RouteLogList: RestBaseServlet() {
                             }
                         )
 
-                        val result = RouteLogListResponse(year, month)
+                        val result = RouteLogListResponse(0,0)//(year, month)
 
                         for (e: Entity in pq.asIterable()) {
                             result.routeList.add(DriveLog(e))
@@ -84,7 +84,7 @@ class RouteLogDetail: RestBaseServlet() {
                             DatastoreServiceFactory.getDatastoreService().get(KeyFactory.stringToKey(routeKey))
                         val vKey = rEntity.parent
 
-                        if (AuthService.checkOwnership(user.key!!, vKey)) {
+                        if (AuthService.checkVehicleOwnership(user.key!!, vKey)) {
                             sendResponse(resp, RouteLogService().getLogDetail(rEntity.key))
                         } else {
                             throw InvalidOwnershipException("Not your route log data")
